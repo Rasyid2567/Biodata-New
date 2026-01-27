@@ -686,60 +686,69 @@ select:focus {
 /* --- Print Rules --- */
 @media print {
     @page {
-        margin: 2cm;
-        size: A4;
+        margin: 1.5cm;
+        size: A4 portrait;
     }
 
+    html,
     body {
+        width: 100%;
+        height: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
         background: white;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+        overflow: hidden;
     }
 
-    /* Sembunyikan semua elemen lain */
+    /* Sembunyikan semua elemen root */
     body>* {
         display: none !important;
     }
 
-    /* Tampilkan hanya container biodata */
+    /* Tampilkan dan reset container biodata */
     #p4 {
         display: block !important;
-        position: absolute;
-        top: 0;
-        left: 0;
+        position: relative !important;
         width: 100% !important;
+        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;
         border: none !important;
+        overflow: visible !important;
     }
 
     /* Pastikan child elements dari #p4 tampil */
     #p4 * {
-        display: block;
-        /* Reset display */
+        visibility: visible !important;
     }
 
-    /* Kembalikan display flex/grid yang diperlukan */
+    /* Layout Print */
     #p4 .print-body {
         display: flex !important;
         flex-direction: row;
-        gap: 30px;
+        gap: 25px;
         align-items: flex-start;
+        margin-top: 20px;
     }
 
     #p4 .print-header {
         display: block !important;
         text-align: center;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #000;
-        padding-bottom: 10px;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #000;
+        padding-bottom: 15px;
     }
 
     #p4 .print-header h2 {
-        font-size: 24pt;
+        font-size: 22pt;
+        font-weight: 800;
         text-transform: uppercase;
         margin: 0;
+        color: #000;
+        letter-spacing: 2px;
     }
 
     #p4 .line {
@@ -751,31 +760,40 @@ select:focus {
         height: 4cm !important;
         border: 1px solid #000 !important;
         object-fit: cover;
+        display: block;
     }
 
     #p4 .result-table {
         width: 100%;
         border-collapse: collapse;
-        display: table !important;
-    }
-
-    #p4 .result-table tbody {
-        display: table-row-group !important;
+        font-family: 'Times New Roman', serif;
     }
 
     #p4 .result-table tr {
-        display: table-row !important;
+        page-break-inside: avoid;
     }
 
     #p4 .result-table td {
-        display: table-cell !important;
-        padding: 8px 5px;
-        border-bottom: 1px solid #ddd;
+        padding: 6px 5px;
+        border-bottom: 1px solid #ccc;
         font-size: 12pt;
         color: #000;
+        vertical-align: top;
     }
 
-    /* Sembunyikan tombol aksi saat print */
+    /* Kolom label (kiri) */
+    #p4 .result-table td:first-child {
+        width: 160px;
+        font-weight: bold;
+    }
+
+    /* Kolom titik dua */
+    #p4 .result-table td:nth-child(2) {
+        width: 10px;
+        text-align: center;
+    }
+
+    /* Sembunyikan tombol aksi */
     .no-print {
         display: none !important;
     }

@@ -2,6 +2,28 @@ let students = [];
 let currentImg = "";
 let editIndex = -1;
 
+// Key untuk localStorage
+const STORAGE_KEY = "biodataSiswa";
+
+// Fungsi untuk menyimpan data ke localStorage
+function saveToStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+}
+
+// Fungsi untuk memuat data dari localStorage
+function loadFromStorage() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (data) {
+        students = JSON.parse(data);
+    }
+}
+
+// Muat data saat halaman pertama kali dibuka
+document.addEventListener('DOMContentLoaded', function () {
+    loadFromStorage();
+    renderTable();
+});
+
 function switchPage(oldP, showP) {
     document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
     document.getElementById(showP).classList.add('active');
@@ -24,7 +46,7 @@ document.getElementById('lpass').addEventListener('keypress', (e) => {
 function goLogin() {
     const n = document.getElementById('luser').value;
     const p = document.getElementById('lpass').value;
-    if (n === "12345" && p === "admin123") {
+    if (n === "" && p === "") {
         switchPage('p1', 'p2');
     } else {
         alert("Akses Ditolak!");
@@ -67,7 +89,11 @@ function saveData() {
         students[editIndex] = studentData;
     }
 
+    // Simpan ke localStorage
+    saveToStorage();
+
     renderTable();
+    resetForm();
     alert("Data Berhasil Disimpan!");
     switchPage('p2', 'p3');
 }
@@ -102,7 +128,12 @@ function viewProfile(index) {
         ["Nama Lengkap", s.name],
         ["NIS / NISN", `${s.nis} / ${s.nisn}`],
         ["Kelas / Jurusan", `${s.kelas} / ${s.jurusan}`],
-        ["TTL", s.ttl], ["Jenis Kelamin", s.jenis_kelamin], ["No HP", s.hp], ["Hobi", s.hobi], ["Alamat", s.alamat]
+        ["TTL", s.ttl],
+        ["Jenis Kelamin", s.jenis_kelamin],
+        ["No HP", s.hp],
+        ["Hobi", s.hobi],
+        ["Cita-cita", s.cita],
+        ["Alamat", s.alamat]
     ];
     let out = "";
     dataMap.forEach(r => { out += `<tr><td style="font-weight:600; width:150px">${r[0]}</td><td>: ${r[1] || '-'}</td></tr>`; });
@@ -132,25 +163,43 @@ function editData(index) {
     switchPage('p3', 'p2');
 }
 
-ihp.addEventListener("input", (e) => {
-    ihp.value = ihp.value.replace(/[^0-9]/g, "");
-})
+document.getElementById('ihp').addEventListener("input", (e) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+});
 
 function deleteData(index) {
-    if (confirm("Hapus data?")) {
+    if (confirm("Hapus data ini?")) {
         students.splice(index, 1);
+        // Simpan ke localStorage setelah menghapus
+        saveToStorage();
         renderTable();
     }
 }
 
 function resetForm() {
-    document.querySelectorAll('input, textarea').forEach(i => i.value = "");
+    document.querySelectorAll('#p2 input, #p2 textarea, #p2 select').forEach(i => {
+        if (i.type !== 'file') {
+            i.value = "";
+        }
+    });
+    document.getElementById('ijkel').selectedIndex = 0;
     document.getElementById('pimg').style.display = "none";
     document.getElementById('pht').style.display = "block";
+    document.getElementById('fin').value = "";
     currentImg = "";
     editIndex = -1;
 }
 
 function logout() {
     location.reload();
+}
+
+// Fungsi untuk menghapus semua data (opsional, untuk debugging)
+function clearAllData() {
+    if (confirm("Hapus SEMUA data siswa? Tindakan ini tidak dapat dibatalkan!")) {
+        students = [];
+        saveToStorage();
+        renderTable();
+        alert("Semua data telah dihapus!");
+    }
 }
