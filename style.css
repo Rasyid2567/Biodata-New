@@ -127,6 +127,7 @@ select {
     transition: all 0.3s ease;
     box-sizing: border-box;
     background: #fff;
+    appearance: none;
 }
 
 input:focus,
@@ -152,6 +153,11 @@ select:focus {
 
 .photo-side {
     flex: 0 0 120px;
+}
+
+.form-side {
+    flex: 1;
+    min-width: 0;
 }
 
 .photo-box {
@@ -260,18 +266,33 @@ select:focus {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* --- Action Footer --- */
+.action-footer {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.action-footer .btn {
+    flex: 1;
+    min-width: 120px;
+}
+
 /* --- Modern Table --- */
 .table-wrapper {
     overflow-x: auto;
     margin: 20px 0;
     border: 1px solid var(--border);
     border-radius: 12px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modern-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
+    min-width: 500px;
 }
 
 .modern-table th {
@@ -284,6 +305,7 @@ select:focus {
     color: var(--text-light);
     border-bottom: 2px solid var(--primary);
     border-right: 1px solid var(--border);
+    white-space: nowrap;
 }
 
 .modern-table th:last-child {
@@ -381,7 +403,30 @@ select:focus {
 }
 
 /* --- Responsive Design --- */
+
+/* Large Tablets & Small Desktops */
+@media (max-width: 1024px) {
+    .card {
+        max-width: 95%;
+        margin: 10px;
+    }
+
+    .wide-card {
+        max-width: 95%;
+    }
+}
+
+/* Tablets */
 @media (max-width: 768px) {
+    body {
+        padding: 15px;
+        align-items: flex-start;
+    }
+
+    .card {
+        padding: 25px;
+        border-radius: 20px;
+    }
 
     .input-container,
     .print-body {
@@ -389,19 +434,252 @@ select:focus {
         align-items: center;
     }
 
+    .form-side {
+        width: 100%;
+    }
+
+    .photo-side {
+        margin-bottom: 20px;
+    }
+
     .row {
         grid-template-columns: 1fr;
         gap: 10px;
     }
 
-    .card {
-        padding: 20px;
-    }
-
     .header-table {
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
         text-align: center;
+    }
+
+    .header-table h2 {
+        font-size: 1.3rem;
+    }
+
+    /* Table responsive */
+    .modern-table th,
+    .modern-table td {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+
+    .modern-table img {
+        width: 40px;
+        height: 53px;
+    }
+
+    /* Action footer buttons */
+    .action-footer {
+        flex-direction: column;
+    }
+
+    .action-footer .btn {
+        width: 100%;
+    }
+}
+
+/* Mobile Landscape */
+@media (max-width: 576px) {
+    body {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .small-card {
+        max-width: 100%;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .brand-icon {
+        font-size: 32px;
+    }
+
+    /* Form elements */
+    input,
+    textarea,
+    select {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    label {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    /* Photo box */
+    .photo-box {
+        width: 100px;
+        height: 133px;
+    }
+
+    .photo-side {
+        flex: 0 0 100px;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    /* Table responsive - stack for small screens */
+    .table-wrapper {
+        margin: 15px 0;
+    }
+
+    .modern-table {
+        min-width: 400px;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    .modern-table th {
+        letter-spacing: 0.5px;
+    }
+
+    .modern-table img {
+        width: 35px;
+        height: 47px;
+    }
+
+    /* Print body */
+    .print-body {
+        gap: 25px;
+    }
+
+    .photo-result {
+        width: 2.5cm;
+        height: 3.33cm;
+    }
+
+    .result-table td {
+        padding: 10px 5px;
+        font-size: 13px;
+    }
+}
+
+/* Mobile Portrait - Extra Small */
+@media (max-width: 400px) {
+    body {
+        padding: 8px;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    h2 {
+        font-size: 1.1rem;
+    }
+
+    .header-center p {
+        font-size: 0.85rem;
+    }
+
+    .brand-icon {
+        font-size: 28px;
+    }
+
+    /* Form elements */
+    input,
+    textarea,
+    select {
+        padding: 10px 12px;
+        font-size: 13px;
+        border-radius: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    /* Photo box */
+    .photo-box {
+        width: 90px;
+        height: 120px;
+        font-size: 11px;
+        border-radius: 10px;
+    }
+
+    .photo-side {
+        flex: 0 0 90px;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 10px 14px;
+        font-size: 12px;
+        border-radius: 10px;
+    }
+
+    .btn-full {
+        margin-top: 8px;
+    }
+
+    /* Table - minimal view */
+    .modern-table {
+        min-width: 350px;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        padding: 8px 6px;
+        font-size: 11px;
+    }
+
+    .modern-table img {
+        width: 30px;
+        height: 40px;
+        border-radius: 4px;
+    }
+
+    /* Action buttons in table */
+    .modern-table .btn {
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+
+    /* Print/Result area */
+    .print-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .line {
+        width: 50px;
+        height: 3px;
+    }
+
+    .result-table td {
+        padding: 8px 4px;
+        font-size: 12px;
+    }
+
+    .photo-result {
+        width: 2.25cm;
+        height: 3cm;
     }
 }
 
