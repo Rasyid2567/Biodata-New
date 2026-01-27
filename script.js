@@ -119,7 +119,7 @@ function editData(index) {
 }
 
 ihp.addEventListener("input", (e) => {
-    ihp.value = e.target.value.replace(/[^0-9]/g, '');   
+    ihp.value = ihp.value.replace(/[^0-9]/g, "");   
 })
 
 function deleteData(index) {
