@@ -48,6 +48,8 @@ function saveData() {
 
     const studentData = {
         name: name,
+        nis: document.getElementById('ins').value,
+        nisn: document.getElementById('insn').value,
         kelas: document.getElementById('ikelas').value,
         jurusan: document.getElementById('ijur').value,
         ttl: document.getElementById('ittl').value,
@@ -77,7 +79,7 @@ function renderTable() {
             <td>${index + 1}</td>
             <td><img src="${s.foto}" width="40" height="50" style="object-fit:cover; border-radius:6px;"></td>
             <td><b>${s.name}</b></td>
-            <td>${s.kelas} / ${s.jurusan}</td>
+            <td>${s.nis} / ${s.nisn}</td>
             <td>
                 <button class="btn btn-view" onclick="viewProfile(${index})"><i class="fa-solid fa-eye"></i></button>
                 <button class="btn btn-print-green" onclick="printDirect(${index})"><i class="fa-solid fa-print"></i></button>
@@ -98,6 +100,7 @@ function viewProfile(index) {
     const s = students[index];
     const dataMap = [
         ["Nama Lengkap", s.name],
+        ["NIS / NISN", `${s.nis} / ${s.nisn}`],
         ["Kelas / Jurusan", `${s.kelas} / ${s.jurusan}`],
         ["TTL", s.ttl], ["Jenis Kelamin", s.jenis_kelamin], ["No HP", s.hp], ["Hobi", s.hobi], ["Alamat", s.alamat]
     ];
@@ -111,6 +114,16 @@ function viewProfile(index) {
 function editData(index) {
     const s = students[index];
     document.getElementById('inama').value = s.name;
+    document.getElementById('ins').value = s.nis || '';
+    document.getElementById('insn').value = s.nisn || '';
+    document.getElementById('ikelas').value = s.kelas || '';
+    document.getElementById('ijur').value = s.jurusan || '';
+    document.getElementById('ittl').value = s.ttl || '';
+    document.getElementById('ijkel').value = s.jenis_kelamin || '';
+    document.getElementById('ihp').value = s.hp || '';
+    document.getElementById('ihobi').value = s.hobi || '';
+    document.getElementById('icita').value = s.cita || '';
+    document.getElementById('ialmt').value = s.alamat || '';
     document.getElementById('pimg').src = s.foto;
     document.getElementById('pimg').style.display = "block";
     document.getElementById('pht').style.display = "none";

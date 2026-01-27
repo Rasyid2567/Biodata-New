@@ -263,6 +263,9 @@ select:focus {
 /* --- Modern Table --- */
 .table-wrapper {
     overflow-x: auto;
+    margin: 20px 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
 }
 
 .modern-table {
@@ -273,19 +276,58 @@ select:focus {
 
 .modern-table th {
     background: #f8f9fd;
-    padding: 16px;
+    padding: 18px 16px;
     text-align: left;
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--text-light);
-    border-bottom: 2px solid var(--bg);
+    border-bottom: 2px solid var(--primary);
+    border-right: 1px solid var(--border);
+}
+
+.modern-table th:last-child {
+    border-right: none;
+}
+
+.modern-table th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.modern-table th:last-child {
+    border-top-right-radius: 12px;
 }
 
 .modern-table td {
-    padding: 16px;
+    padding: 18px 16px;
     border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
     font-size: 14px;
+    vertical-align: middle;
+}
+
+.modern-table td:last-child {
+    border-right: none;
+}
+
+.modern-table tr:last-child td {
+    border-bottom: none;
+}
+
+.modern-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.modern-table tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.modern-table tbody tr:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+.modern-table tbody tr:nth-child(even):hover {
+    background-color: rgba(67, 97, 238, 0.08);
 }
 
 /* Foto Kecil di Tabel (Tetap 3x4) */
@@ -294,7 +336,8 @@ select:focus {
     height: 60px;
     object-fit: cover;
     border-radius: 6px;
-    border: 1px solid #eee;
+    border: 2px solid #eee;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* --- View/Print Profile Area --- */
