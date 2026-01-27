@@ -118,6 +118,10 @@ function editData(index) {
     switchPage('p3', 'p2');
 }
 
+ihp.addEventListener("input", (e) => {
+    ihp.value = e.target.value.replace(/[^0-9]/g, '');   
+})
+
 function deleteData(index) {
     if (confirm("Hapus data?")) {
         students.splice(index, 1);
