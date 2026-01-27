@@ -33,7 +33,7 @@ function goLogin() {
 
 function loadImg(e) {
     let r = new FileReader();
-    r.onload = function() {
+    r.onload = function () {
         document.getElementById('pimg').src = r.result;
         document.getElementById('pimg').style.display = "block";
         document.getElementById('pht').style.display = "none";
@@ -51,6 +51,7 @@ function saveData() {
         kelas: document.getElementById('ikelas').value,
         jurusan: document.getElementById('ijur').value,
         ttl: document.getElementById('ittl').value,
+        jenis_kelamin: document.getElementById('ijkel').value,
         hp: document.getElementById('ihp').value,
         hobi: document.getElementById('ihobi').value,
         cita: document.getElementById('icita').value,
@@ -63,7 +64,7 @@ function saveData() {
     } else {
         students[editIndex] = studentData;
     }
-    
+
     renderTable();
     alert("Data Berhasil Disimpan!");
     switchPage('p2', 'p3');
@@ -96,9 +97,9 @@ function printDirect(index) {
 function viewProfile(index) {
     const s = students[index];
     const dataMap = [
-        ["Nama Lengkap", s.name], 
+        ["Nama Lengkap", s.name],
         ["Kelas / Jurusan", `${s.kelas} / ${s.jurusan}`],
-        ["TTL", s.ttl], ["No HP", s.hp], ["Hobi", s.hobi], ["Alamat", s.alamat]
+        ["TTL", s.ttl], ["Jenis Kelamin", s.jenis_kelamin], ["No HP", s.hp], ["Hobi", s.hobi], ["Alamat", s.alamat]
     ];
     let out = "";
     dataMap.forEach(r => { out += `<tr><td style="font-weight:600; width:150px">${r[0]}</td><td>: ${r[1] || '-'}</td></tr>`; });
@@ -119,7 +120,7 @@ function editData(index) {
 }
 
 ihp.addEventListener("input", (e) => {
-    ihp.value = ihp.value.replace(/[^0-9]/g, "");   
+    ihp.value = ihp.value.replace(/[^0-9]/g, "");
 })
 
 function deleteData(index) {
