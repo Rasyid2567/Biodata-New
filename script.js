@@ -136,7 +136,13 @@ function viewProfile(index) {
         ["Alamat", s.alamat]
     ];
     let out = "";
-    dataMap.forEach(r => { out += `<tr><td style="font-weight:600; width:150px">${r[0]}</td><td>: ${r[1] || '-'}</td></tr>`; });
+    dataMap.forEach(r => {
+        out += `<tr>
+            <td class="label-col">${r[0]}</td>
+            <td class="colon-col">:</td>
+            <td class="value-col">${r[1] || '-'}</td>
+        </tr>`;
+    });
     document.getElementById('resData').innerHTML = out;
     document.getElementById('rfoto').src = s.foto;
     switchPage('p3', 'p4');
