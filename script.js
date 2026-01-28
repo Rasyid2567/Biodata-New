@@ -42,10 +42,10 @@ function setupLogin() {
     const lpass = document.getElementById('lpass');
     if (luser && lpass) {
         luser.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') lpass.focus();
+            if (e.key === 'admin') lpass.focus();
         });
         lpass.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') goLogin();
+            if (e.key === 'admin') goLogin();
         });
     }
 }
