@@ -1,6 +1,5 @@
 let students = [];
 let currentImg = "";
-let editIndex = -1;
 
 // Key untuk localStorage
 const STORAGE_KEY = "biodataSiswa";
@@ -21,35 +20,55 @@ function loadFromStorage() {
 // Muat data saat halaman pertama kali dibuka
 document.addEventListener('DOMContentLoaded', function () {
     loadFromStorage();
-    renderTable();
+
+    // Deteksi halaman saat ini
+    const path = window.location.pathname;
+    const page = path.split("/").pop();
+
+    if (page === "dashboard.html" || page === "" || page === "index.html") {
+        renderTable();
+    } else if (page === "tambah-siswa.html") {
+        checkEditMode();
+        setupNumericInputs();
+    } else if (page === "biodata-siswa.html") {
+        loadProfileForView();
+    } else if (page === "login.html") {
+        setupLogin();
+    }
 });
 
-function switchPage(oldP, showP) {
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-    document.getElementById(showP).classList.add('active');
+function setupLogin() {
+    const luser = document.getElementById('luser');
+    const lpass = document.getElementById('lpass');
+    if (luser && lpass) {
+        luser.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') lpass.focus();
+        });
+        lpass.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') goLogin();
+        });
+    }
 }
 
-document.getElementById('luser').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        document.getElementById('lpass').focus();
-    }
-});
-
-document.getElementById('lpass').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        goLogin();
-    }
-});
+function setupNumericInputs() {
+    const numericIds = ['ins', 'insn', 'ihp'];
+    numericIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, "");
+            });
+        }
+    });
+}
 
 function goLogin() {
     const n = document.getElementById('luser').value;
     const p = document.getElementById('lpass').value;
-    if (n === "" && p === "") {
-        switchPage('p1', 'p2');
+    if (n === "admin" && p === "admin") {
+        window.location.href = "dashboard.html";
     } else {
-        alert("Akses Ditolak!");
+        alert("Akses Ditolak! Gunakan admin/admin");
     }
 }
 
@@ -83,46 +102,66 @@ function saveData() {
         foto: currentImg || "https://via.placeholder.com/120x160"
     };
 
-    if (editIndex === -1) {
-        students.push(studentData);
+    const editingIdx = localStorage.getItem('editIndex');
+
+    if (editingIdx !== null && editingIdx !== "-1") {
+        students[parseInt(editingIdx)] = studentData;
+        localStorage.removeItem('editIndex');
     } else {
-        students[editIndex] = studentData;
+        students.push(studentData);
     }
 
-    // Simpan ke localStorage
     saveToStorage();
-
-    renderTable();
-    resetForm();
     alert("Data Berhasil Disimpan!");
-    switchPage('p2', 'p3');
+    window.location.href = "dashboard.html";
 }
 
 function renderTable() {
+    const tableBody = document.getElementById('tableBody');
+    if (!tableBody) return;
+
+    if (students.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color: #999;">Belum ada data siswa.</td></tr>';
+        return;
+    }
+
     let html = "";
     students.forEach((s, index) => {
         html += `<tr>
             <td>${index + 1}</td>
-            <td><img src="${s.foto}" width="40" height="50" style="object-fit:cover; border-radius:6px;"></td>
+            <td><img src="${s.foto}" alt="Foto"></td>
             <td><b>${s.name}</b></td>
             <td>${s.nis} / ${s.nisn}</td>
             <td>
-                <button class="btn btn-view" onclick="viewProfile(${index})"><i class="fa-solid fa-eye"></i></button>
-                <button class="btn btn-print-green" onclick="printDirect(${index})"><i class="fa-solid fa-print"></i></button>
-                <button class="btn btn-yellow" onclick="editData(${index})"><i class="fa-solid fa-pen"></i></button>
-                <button class="btn btn-red" onclick="deleteData(${index})"><i class="fa-solid fa-trash"></i></button>
+                <button class="btn btn-view" title="Lihat" onclick="viewProfile(${index})"><i class="fa-solid fa-eye"></i></button>
+                <button class="btn btn-print-green" title="Cetak" onclick="printDir(${index})"><i class="fa-solid fa-print"></i></button>
+                <button class="btn btn-yellow" title="Edit" onclick="editData(${index})"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn btn-red" title="Hapus" onclick="deleteData(${index})"><i class="fa-solid fa-trash"></i></button>
             </td>
         </tr>`;
     });
-    document.getElementById('tableBody').innerHTML = html;
-}
-
-function printDirect(index) {
-    viewProfile(index);
-    setTimeout(() => { window.print(); }, 500);
+    tableBody.innerHTML = html;
 }
 
 function viewProfile(index) {
+    localStorage.setItem('viewIndex', index);
+    window.location.href = "biodata-siswa.html";
+}
+
+function printDir(index) {
+    localStorage.setItem('viewIndex', index);
+    localStorage.setItem('autoPrint', 'true');
+    window.location.href = "biodata-siswa.html";
+}
+
+function loadProfileForView() {
+    const index = localStorage.getItem('viewIndex');
+    if (index === null || !students[index]) {
+        alert("Data tidak ditemukan!");
+        window.location.href = "dashboard.html";
+        return;
+    }
+
     const s = students[index];
     const dataMap = [
         ["Nama Lengkap", s.name],
@@ -145,67 +184,74 @@ function viewProfile(index) {
     });
     document.getElementById('resData').innerHTML = out;
     document.getElementById('rfoto').src = s.foto;
-    switchPage('p3', 'p4');
+
+    if (localStorage.getItem('autoPrint') === 'true') {
+        localStorage.removeItem('autoPrint');
+        setTimeout(() => { window.print(); }, 500);
+    }
 }
 
 function editData(index) {
-    const s = students[index];
-    document.getElementById('inama').value = s.name;
-    document.getElementById('ins').value = s.nis || '';
-    document.getElementById('insn').value = s.nisn || '';
-    document.getElementById('ikelas').value = s.kelas || '';
-    document.getElementById('ijur').value = s.jurusan || '';
-    document.getElementById('ittl').value = s.ttl || '';
-    document.getElementById('ijkel').value = s.jenis_kelamin || '';
-    document.getElementById('ihp').value = s.hp || '';
-    document.getElementById('ihobi').value = s.hobi || '';
-    document.getElementById('icita').value = s.cita || '';
-    document.getElementById('ialmt').value = s.alamat || '';
-    document.getElementById('pimg').src = s.foto;
-    document.getElementById('pimg').style.display = "block";
-    document.getElementById('pht').style.display = "none";
-    currentImg = s.foto;
-    editIndex = index;
-    switchPage('p3', 'p2');
+    localStorage.setItem('editIndex', index);
+    window.location.href = "tambah-siswa.html";
 }
 
-document.getElementById('ihp').addEventListener("input", (e) => {
-    e.target.value = e.target.value.replace(/[^0-9]/g, "");
-});
+function checkEditMode() {
+    const index = localStorage.getItem('editIndex');
+    if (index !== null && index !== "-1" && students[index]) {
+        const s = students[index];
+        document.getElementById('inama').value = s.name;
+        document.getElementById('ins').value = s.nis || '';
+        document.getElementById('insn').value = s.nisn || '';
+        document.getElementById('ikelas').value = s.kelas || '';
+        document.getElementById('ijur').value = s.jurusan || '';
+        document.getElementById('ittl').value = s.ttl || '';
+        document.getElementById('ijkel').value = s.jenis_kelamin || '';
+        document.getElementById('ihp').value = s.hp || '';
+        document.getElementById('ihobi').value = s.hobi || '';
+        document.getElementById('icita').value = s.cita || '';
+        document.getElementById('ialmt').value = s.alamat || '';
+
+        const pimg = document.getElementById('pimg');
+        const pht = document.getElementById('pht');
+        if (s.foto && s.foto !== "https://via.placeholder.com/120x160") {
+            pimg.src = s.foto;
+            pimg.style.display = "block";
+            pht.style.display = "none";
+            currentImg = s.foto;
+        }
+
+        const header = document.querySelector('.card-header h2');
+        if (header) header.innerHTML = '<i class="fa-solid fa-user-pen"></i> Edit Data Siswa';
+    }
+}
 
 function deleteData(index) {
     if (confirm("Hapus data ini?")) {
         students.splice(index, 1);
-        // Simpan ke localStorage setelah menghapus
         saveToStorage();
         renderTable();
     }
 }
 
 function resetForm() {
-    document.querySelectorAll('#p2 input, #p2 textarea, #p2 select').forEach(i => {
-        if (i.type !== 'file') {
-            i.value = "";
-        }
-    });
-    document.getElementById('ijkel').selectedIndex = 0;
-    document.getElementById('pimg').style.display = "none";
-    document.getElementById('pht').style.display = "block";
-    document.getElementById('fin').value = "";
-    currentImg = "";
-    editIndex = -1;
+    if (confirm("Reset form?")) {
+        document.querySelectorAll('input, textarea, select').forEach(i => {
+            if (i.type !== 'file') i.value = "";
+        });
+        const kel = document.getElementById('ijkel');
+        if (kel) kel.selectedIndex = 0;
+
+        document.getElementById('pimg').style.display = "none";
+        document.getElementById('pht').style.display = "block";
+        document.getElementById('fin').value = "";
+        currentImg = "";
+        localStorage.removeItem('editIndex');
+    }
 }
 
 function logout() {
-    location.reload();
-}
-
-// Fungsi untuk menghapus semua data (opsional, untuk debugging)
-function clearAllData() {
-    if (confirm("Hapus SEMUA data siswa? Tindakan ini tidak dapat dibatalkan!")) {
-        students = [];
-        saveToStorage();
-        renderTable();
-        alert("Semua data telah dihapus!");
+    if (confirm("Keluar dari sistem?")) {
+        window.location.href = "login.html";
     }
 }
