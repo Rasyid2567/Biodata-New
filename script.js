@@ -30,8 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (page === "tambah-siswa.html") {
         checkEditMode();
         setupNumericInputs();
-    } else if (page === "biodata-siswa.html") {
-        loadProfileForView();
     } else if (page === "login.html") {
         setupLogin();
     }
@@ -144,21 +142,39 @@ function renderTable() {
 }
 
 function viewProfile(index) {
-    localStorage.setItem('viewIndex', index);
-    window.location.href = "biodata-siswa.html";
+    const p3 = document.getElementById('p3');
+    const p4 = document.getElementById('p4');
+    if (p3 && p4) {
+        p3.style.display = "none";
+        p4.style.display = "block";
+        loadProfileForView(index);
+    }
 }
 
 function printDir(index) {
-    localStorage.setItem('viewIndex', index);
-    localStorage.setItem('autoPrint', 'true');
-    window.location.href = "biodata-siswa.html";
+    const p3 = document.getElementById('p3');
+    const p4 = document.getElementById('p4');
+    if (p3 && p4) {
+        p3.style.display = "none";
+        p4.style.display = "block";
+        loadProfileForView(index);
+        setTimeout(() => { window.print(); }, 500);
+    }
 }
 
-function loadProfileForView() {
-    const index = localStorage.getItem('viewIndex');
-    if (index === null || !students[index]) {
+function showDashboard() {
+    const p3 = document.getElementById('p3');
+    const p4 = document.getElementById('p4');
+    if (p3 && p4) {
+        p3.style.display = "block";
+        p4.style.display = "none";
+    }
+}
+
+function loadProfileForView(index) {
+    if (index === undefined || !students[index]) {
         alert("Data tidak ditemukan!");
-        window.location.href = "dashboard.html";
+        showDashboard();
         return;
     }
 
@@ -184,11 +200,6 @@ function loadProfileForView() {
     });
     document.getElementById('resData').innerHTML = out;
     document.getElementById('rfoto').src = s.foto;
-
-    if (localStorage.getItem('autoPrint') === 'true') {
-        localStorage.removeItem('autoPrint');
-        setTimeout(() => { window.print(); }, 500);
-    }
 }
 
 function editData(index) {
